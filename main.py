@@ -91,7 +91,7 @@ def main():
             case _:
                 output = "Неверная команда"
 
-        # os.system('clear')
+        os.system('clear')
 
 
 if __name__ == "__main__":
