@@ -98,23 +98,35 @@ class Game(AbstractGame):
         self._inventory_food: list[Food] = []
         self._inventory_medicine: list[Medicine] = []
         self._coins: int = 100
-        if len(self._all_food) < 2:
-            while len(self._all_food) < 2:
-                self._all_food.append(
-                    Food(
-                        name=f"Доп-еда-{len(self._all_food)}",
-                        satiety=10, price=0
-                    )
-                )
+    # def __init__(
+    #     self,
+    #     tamagochi: AbstractTamagochi,
+    #     clicker: AbstractClicker,
+    #     all_food: list[Food],
+    #     all_medicine: list[Medicine]
+    # ) -> None:
+    #     """Инициализация пользовательского класса игры."""
+    #     super().__init__(tamagochi, clicker, all_food, all_medicine)
+    #     self._inventory_food: list[Food] = []
+    #     self._inventory_medicine: list[Medicine] = []
+    #     self._coins: int = 100
+    #     if len(self._all_food) < 2:
+    #         while len(self._all_food) < 2:
+    #             self._all_food.append(
+    #                 Food(
+    #                     name=f"Доп-еда-{len(self._all_food)}",
+    #                     satiety=10, price=0
+    #                 )
+    #             )
 
-        if len(self._all_medicine) < 2:
-            while len(self._all_medicine) < 2:
-                self._all_medicine.append(
-                    Medicine(
-                        name=f"Доп-лекарство-{len(self._all_medicine)}",
-                        price=0, heal_hp=5, number_of_uses=1
-                    )
-                )
+    #     if len(self._all_medicine) < 2:
+    #         while len(self._all_medicine) < 2:
+    #             self._all_medicine.append(
+    #                 Medicine(
+    #                     name=f"Доп-лекарство-{len(self._all_medicine)}",
+    #                     price=0, heal_hp=5, number_of_uses=1
+    #                 )
+    #             )
 
     def work(self) -> int:
         """Метод класса для зарабатывания монет."""
