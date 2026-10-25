@@ -3,10 +3,10 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from .clicker import ConcreteClicker
-from .exceptions import InvalidItemError, NotEnoughMoney, TamagochiIsGone
+from .clicker import AbstractClicker
+from .exceptions import InvalidItemError, TamagochiIsGone
 from .models import Food, Medicine
-from .tamagochi import ConcreteTamagochi
+from .tamagochi import AbstractTamagochi
 
 
 class AbstractGame(ABC):
@@ -14,8 +14,8 @@ class AbstractGame(ABC):
 
     def __init__(
         self,
-        tamagochi: ConcreteTamagochi,
-        clicker: ConcreteClicker,
+        tamagochi: AbstractTamagochi,
+        clicker: AbstractClicker,
         all_food: list[Food],
         all_medicine: list[Medicine]
     ) -> None:
@@ -88,8 +88,8 @@ class Game(AbstractGame):
 
     def __init__(
         self,
-        tamagochi: ConcreteTamagochi,
-        clicker: ConcreteClicker,
+        tamagochi: AbstractTamagochi,
+        clicker: AbstractClicker,
         all_food: list[Food],
         all_medicine: list[Medicine]
     ) -> None:
@@ -130,47 +130,19 @@ class Game(AbstractGame):
         """Метод покупки еды."""
         if not self._all_food:
             return
-
-        for i, food in enumerate(self._all_food):
-            print(f"{i}. {food.name}")
-
-        try:
-            user_input = input("Введите номер: ")
-            idx = int(user_input.strip())
-
-            if 0 <= idx < len(self._all_food):
-                selected = self._all_food[idx]
-                if self._coins < selected.price:
-                    raise NotEnoughMoney("Не хватает монет")
-                self._coins -= selected.price
-                self._inventory_food.append(selected)
-                print(f"Куплено: {selected.name}")
-            else:
-                pass
-        except (ValueError, NotEnoughMoney):
-            pass
+        selected = self._all_food[0]
+        if self._coins >= selected.price:
+            self._coins -= selected.price
+            self._inventory_food.append(selected)
 
     def buy_medicine(self) -> None:
         """Метод покупки лекарств."""
         if not self._all_medicine:
             return
-
-        for i, med in enumerate(self._all_medicine):
-            print(f"{i}. {med.name}")
-
-        try:
-            user_input = input("Введите номер: ")
-            idx = int(user_input.strip())
-
-            if 0 <= idx < len(self._all_medicine):
-                selected = self._all_medicine[idx]
-                if self._coins < selected.price:
-                    raise NotEnoughMoney("Не хватает монет")
-                self._coins -= selected.price
-                self._inventory_medicine.append(selected)
-                print(f"Куплено: {selected.name}")
-        except (ValueError, NotEnoughMoney):
-            pass
+        selected = self._all_medicine[0]
+        if self._coins >= selected.price:
+            self._coins -= selected.price
+            self._inventory_medicine.append(selected)
 
     def feed_tamagochi(self) -> None:
         """Метод осуществляет кормление тамагочи."""

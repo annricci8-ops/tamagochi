@@ -87,7 +87,7 @@ def main():
                 game.rest_tamagochi()
                 output = 'Питомец отдохнул'
             case "0":
-                break
+                return
             case _:
                 output = "Неверная команда"
 
