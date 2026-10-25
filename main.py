@@ -1,9 +1,26 @@
+"""
+Точка входа в игру «Тамагочи с кликером».
+
+Запускает игровой цикл: показывает меню, обрабатывает ввод игрока,
+обновляет состояние тамагочи и выводит текущий статус.
+"""
+
 import os
 
 from game.models import Food, Medicine
+from game.tamagochi import BasicTamagochi
+from game.clicker import SimpleRandomClicker
+from game.game import Game
 
 
 def main():
+    """
+    Инициализирует компоненты игры и запускает бесконечный игровой цикл.
+
+    Создаёт тамагочи, кликер, каталог товаров и экземпляр игры.
+    В цикле выводит меню, принимает ввод пользователя, вызывает действия
+    и обновляет состояние питомца. Завершает работу при смерти тамагочи.
+    """
     all_food = [
         Food(name='Бургер', satiety=20, price=40),
         Food(name='Салат', satiety=10, price=20),
@@ -14,9 +31,14 @@ def main():
         Medicine(name='Ибупрофен', price=30, heal_hp=20, number_of_uses=2)
     ]
 
-    tamagochi = SimpleTamagochi()  #  Вместо SimpleTamagochi импортируйте и создайте инстанс от своей реализации
-    clicker = SimpleRandomClicker(10, 20) #  Вместо SimpleRandomClicker импортируйте и создайте инстанс от своей реализации
-    game = SimpleGame(tamagochi, clicker, all_food=all_food, all_medicine=all_medicine) #  Вместо SimpleGame импортируйте и создайте инстанс от своей реализации
+    tamagochi = BasicTamagochi(name="Пушистик")
+    clicker = SimpleRandomClicker(10, 20)
+    game = Game(
+        tamagochi,
+        clicker,
+        all_food=all_food,
+        all_medicine=all_medicine
+    )
 
     print("Добро пожаловать в Тамагочи-кликер!")
     output = ''

@@ -7,3 +7,11 @@ class TamagochiIsGone(Exception):
 
 class NotEnoughMoney(Exception):
     """Ошибка когда не хватает монет для покупки"""
+
+
+class InvalidItemError(Exception):
+    """Ошибка при использовании неподходящего предмета."""
+
+
+class NoItemInInventory(Exception):
+    """В инвентаре нет нужного предмета (еды/лекарства)."""
