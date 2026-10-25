@@ -56,7 +56,7 @@ class AbstractTamagochi(ABC):
         raise NotImplementedError
 
 
-class BasicTamagochi(AbstractTamagochi):
+class ConcreteTamagochi(AbstractTamagochi):
     """
     Базовая реализация тамагочи.
 

@@ -3,10 +3,10 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from .clicker import AbstractClicker
+from .clicker import ConcreteClicker
 from .exceptions import InvalidItemError, NotEnoughMoney, TamagochiIsGone
 from .models import Food, Medicine
-from .tamagochi import AbstractTamagochi
+from .tamagochi import ConcreteTamagochi
 
 
 class AbstractGame(ABC):
@@ -14,8 +14,8 @@ class AbstractGame(ABC):
 
     def __init__(
         self,
-        tamagochi: AbstractTamagochi,
-        clicker: AbstractClicker,
+        tamagochi: ConcreteTamagochi,
+        clicker: ConcreteClicker,
         all_food: list[Food],
         all_medicine: list[Medicine]
     ) -> None:
@@ -88,8 +88,8 @@ class Game(AbstractGame):
 
     def __init__(
         self,
-        tamagochi: AbstractTamagochi,
-        clicker: AbstractClicker,
+        tamagochi: ConcreteTamagochi,
+        clicker: ConcreteClicker,
         all_food: list[Food],
         all_medicine: list[Medicine]
     ) -> None:

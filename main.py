@@ -8,8 +8,8 @@
 import os
 
 from game.models import Food, Medicine
-from game.tamagochi import BasicTamagochi
-from game.clicker import SimpleRandomClicker
+from game.tamagochi import ConcreteTamagochi
+from game.clicker import ConcreteClicker
 from game.game import Game
 
 
@@ -31,8 +31,8 @@ def main():
         Medicine(name='Ибупрофен', price=30, heal_hp=20, number_of_uses=2)
     ]
 
-    tamagochi = BasicTamagochi(name="Пушистик")
-    clicker = SimpleRandomClicker(10, 20)
+    tamagochi = ConcreteTamagochi(name="Пушистик")
+    clicker = ConcreteClicker(10, 20)
     game = Game(
         tamagochi,
         clicker,
