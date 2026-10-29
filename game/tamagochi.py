@@ -2,6 +2,7 @@
 
 from abc import ABC, abstractmethod
 from typing import Any
+
 from .constants import (
     HUNGER_INC,
     HAPPINESS_DEC,

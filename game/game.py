@@ -1,10 +1,10 @@
 """Модуль с интерфейсом и реализацией класса игры."""
 
 from abc import ABC, abstractmethod
+from copy import deepcopy
 from typing import Any
 
 from .clicker import AbstractClicker
-from copy import deepcopy
 from .constants import FULL_COINS
 from .exceptions import (
     InvalidItemError,
