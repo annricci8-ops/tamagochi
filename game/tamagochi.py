@@ -2,6 +2,22 @@
 
 from abc import ABC, abstractmethod
 from typing import Any
+from .constants import (
+    HUNGER_INC,
+    HAPPINESS_DEC,
+    ENERGY_DEC,
+    SICK_THRESHOLD,
+    SICK_GAIN_BAD,
+    SICK_DEC_GOOD,
+    HP_DEC_SICK,
+    HP_DEC_HEALTHY,
+    HUNGER_DEATH,
+    LOW_HUNGER,
+    LOW_SICK,
+    MAX_ENERGY,
+    MAX_HAPPINESS,
+    MAX_HP
+)
 
 from .exceptions import InvalidItemError, TamagochiIsGone
 from .models import Food, Medicine
@@ -72,18 +88,14 @@ class ConcreteTamagochi(AbstractTamagochi):
     hp начинает падать быстрее.
     """
 
-    MAX_HP = 100
-    MAX_HAPPINESS = 100
-    MAX_ENERGY = 100
-
     def __init__(self, name='Pufik') -> None:
         """Инициализирует нового тамагочи."""
         self._name = name
-        self._hunger = 0
-        self._happiness = 100
-        self._energy = 100
-        self._hp = 100
-        self._sick_progress = 0
+        self._hunger = LOW_HUNGER
+        self._happiness = MAX_HAPPINESS
+        self._energy = MAX_ENERGY
+        self._hp = MAX_HP
+        self._sick_progress = LOW_SICK
         self._is_sick = False
         self._is_dead = False
 
@@ -91,46 +103,43 @@ class ConcreteTamagochi(AbstractTamagochi):
         """Реализация метода кормления тамагочи."""
         if self._is_dead:
             raise TamagochiIsGone(
-                f'{self._name} уже умер,'
+                f'{self._name} уже умер, '
                 f'его нельзя кормить.'
             )
-        if not isinstance(food, Food):
-            raise InvalidItemError('Можно кормить только объектами Food.')
-
         self._hunger = max(0, self._hunger - food.satiety)
-        self._happiness = min(self.MAX_HAPPINESS, self._happiness + 5)
+        self._happiness = min(MAX_HAPPINESS, self._happiness + 5)
 
     def play(self) -> None:
         """Реализация игры с тамагочи."""
         if self._is_dead:
             raise TamagochiIsGone(
-                f'{self._name} уже умер,'
+                f'{self._name} уже умер, '
                 f'с ним нельзя играть.'
             )
         if self._energy < 10:
             self._happiness = max(0, self._happiness - 5)
         else:
             self._energy = max(0, self._energy - 15)
-            self._happiness = min(self.MAX_HAPPINESS, self._happiness + 10)
+            self._happiness = min(MAX_HAPPINESS, self._happiness + 10)
 
     def rest(self) -> None:
         """Реализация отдыха тамагочи."""
         if self._is_dead:
             raise TamagochiIsGone(f'{self._name} уже умер. Вечный отдых.')
-        self._energy = min(self.MAX_ENERGY, self._energy + 20)
-        self._hp = min(self.MAX_HP, self._hp + 5)
+        self._energy = min(MAX_ENERGY, self._energy + 20)
+        self._hp = min(MAX_HP, self._hp + 5)
 
     def heal(self, medicine: Medicine) -> None:
         """Реализация лечения тамагочи."""
         if self._is_dead:
             raise TamagochiIsGone(
-                f'{self._name} уже умер,'
+                f'{self._name} уже умер, '
                 f'поздно пить Боржоми.'
             )
-        if not isinstance(medicine, Medicine):
-            raise InvalidItemError('Лечить можно только объектами Medicine.')
+        if not medicine.use():
+            raise InvalidItemError('Лекарство закончилось.')
         heal_amount = medicine.heal_hp
-        self._hp = min(self.MAX_HP, self._hp + heal_amount)
+        self._hp = min(MAX_HP, self._hp + heal_amount)
         if heal_amount > 0 and self._is_sick:
             self._is_sick = False
             self._sick_progress = 0
@@ -160,28 +169,33 @@ class ConcreteTamagochi(AbstractTamagochi):
     def update(self) -> None:
         """Обновление состояний тамагочи."""
         if self._is_dead:
-            pass
-        else:
-            self._hunger += 2
-            self._happiness = max(0, self._happiness - 1)
-            self._energy = max(0, self._energy - 1)
+            raise TamagochiIsGone('Тамагочи умер :(')
 
-            if not self._is_sick:
-                if self._happiness < 30 and self._energy < 30:
-                    self._sick_progress += 3
-                else:
-                    self._sick_progress = max(0, self._sick_progress - 1)
+        self._hunger += HUNGER_INC
+        self._happiness = max(0, self._happiness - HAPPINESS_DEC)
+        self._energy = max(0, self._energy - ENERGY_DEC)
 
-                if self._sick_progress >= 100:
-                    self._is_sick = True
+        if not self._is_sick:
+            if self._happiness < 30 and self._energy < 30:
+                self._sick_progress += SICK_GAIN_BAD
             else:
-                self._sick_progress = min(100, self._sick_progress + 1)
-                self._hp -= 3
+                self._sick_progress = max(
+                    0, self._sick_progress - SICK_DEC_GOOD
+                )
 
-            if not self._is_sick:
-                self._hp = max(0, self._hp - 1)
+            if self._sick_progress >= SICK_THRESHOLD:
+                self._is_sick = True
+                self._sick_progress = SICK_THRESHOLD
 
-            if self._hp <= 0 or self._hunger >= 120:
-                self._is_dead = True
-                self._hp = 0
-                self._hunger = 120
+        if self._is_sick:
+            self._hp = max(0, self._hp - HP_DEC_SICK)
+            self._sick_progress = min(
+                SICK_THRESHOLD,
+                self._sick_progress + 1
+            )
+        else:
+            self._hp = max(0, self._hp - HP_DEC_HEALTHY)
+        if self._hp <= 0 or self._hunger >= HUNGER_DEATH:
+            self._is_dead = True
+            self._hp = 0
+            self._hunger = HUNGER_DEATH

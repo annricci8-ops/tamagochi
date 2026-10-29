@@ -37,11 +37,12 @@ class ConcreteClicker(AbstractClicker):
         self._max_income = max_income
         self._current_income = 0
         self._click_count = 0
+        self.clicks = 0
 
     def click(self) -> int:
         """Выполняет клик."""
-        self._click_count += 1
         self._current_income = randint(self._min_income, self._max_income)
+        self.clicks += 1
         return self._current_income
 
     @property
