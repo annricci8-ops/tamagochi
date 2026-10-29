@@ -108,6 +108,8 @@ class Game(AbstractGame):
     def work(self) -> int:
         """Метод класса для зарабатывания монет."""
         earned = self._clicker.click()
+        if earned is None:
+            earned = 0
         self._coins += earned
         return earned
 
